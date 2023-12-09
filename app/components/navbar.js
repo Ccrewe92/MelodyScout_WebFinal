@@ -17,7 +17,7 @@ const Navbar = () => {
 
           {/* Menu items in the middle */}
           <div className="hidden md:flex items-center justify-center flex-grow space-x-4">
-            <Link href="/">Home</Link>
+            <Link href="../pages/contact">Home</Link>
             <Link href="/about">About</Link>
             <Link href="/contact">Contact</Link>
           </div>
