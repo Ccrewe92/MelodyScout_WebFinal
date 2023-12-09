@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import Link from "next/link"; // Import Link from Next.js to handle navigation
+import React, { useState } from "react";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
