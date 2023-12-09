@@ -28,9 +28,9 @@ const Footer = () => {
             © 2023 MelodyScout. All Rights Reserved.
           </span>
           <div className="flex mt-4 sm:justify-center sm:mt-0">
-            <Link href="https://github.com/yourusername/yourrepository">
+            <Link href="https://github.com/Ccrewe92/MelodyScout_WebFinal">
               <span className="text-gray-500 hover:text-gray-900 dark:hover:text-white cursor-pointer">
-                {/* Insert your GitHub SVG or icon here */}
+                <img src="/github-mark.png" className="h-8 w-auto" alt="Logo" />
                 <span className="sr-only">GitHub account</span>
               </span>
             </Link>
