@@ -22,6 +22,19 @@ export const getAccessToken = async (code) => {
   );
   return tokenResponse.data.access_token;
 };
+export const getUserTopTracks = async (accessToken) => {
+  try {
+    const response = await axios.get(`${SPOTIFY_API_URL}/me/top/tracks`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+    return response.data.items; // Assuming the Spotify API returns the user's top tracks in an 'items' array
+  } catch (error) {
+    console.error('Error fetching user top tracks:', error);
+    throw error; // It's good practice to throw the error so the calling function can handle it
+  }
+};
 
 export const searchTracks = async (accessToken, query) => {
   const response = await axios.get(`${SPOTIFY_API_URL}/search`, {
