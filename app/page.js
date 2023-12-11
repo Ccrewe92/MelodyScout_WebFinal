@@ -6,6 +6,12 @@ import Footer from "./components/footer";
 import qs from "qs";
 import { searchTracks } from "./utils/spotifyapi";
 import { useSearchParams } from "next/navigation";
+import { logout as firebaseLogout } from "./utils/auth"; // Import the logout function
+import router, { useRouter } from 'next/router';
+
+const [searchTerm, setSearchTerm] = useState("");
+const [recommendations, setRecommendations] = useState([]);
+
 
 export default function Home() {
   const [authToken, setAuthToken] = useState(null);
@@ -13,6 +19,7 @@ export default function Home() {
   const [recommendations, setRecommendations] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [code, setCode] = useState(null); // State for the code
+
 
   const params = useSearchParams();
 
@@ -77,6 +84,16 @@ export default function Home() {
     location.reload();
   };
 
+  const handleLogout = async () => {
+    try {
+      await firebaseLogout(); // This will also clear the Spotify token from localStorage
+      setAuthToken(null); // Clear the token from the component state
+      router.push('/login'); // Redirect to login page using Next.js Router
+    } catch (error) {
+      console.error('Error during logout', error);
+    }
+  };
+
   const loginUrl =
     "https://accounts.spotify.com/authorize?" +
     qs.stringify({
@@ -87,38 +104,38 @@ export default function Home() {
       state: "12321",
     });
 
-  return (
-    <div className="flex flex-col min-h-screen">
-      <Navbar />
-      {/* Search Bar */}
-      <form onSubmit={handleSearch}>
-        <div className="search-bar-container">
-          <input
-            type="text"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder="Search for artists"
-          />
-          <button onClick={handleSearch}>Search</button>
-        </div>
-      </form>
-      {/* Recommendations Container */}
-      <div className="recommendations-container">
-        {recommendations.map((track) => (
-          <div key={track.id} className="song-card">
-            <h3>{track.name}</h3>
-            <p>Artist: {track.artists[0].name}</p>
-            {/* Add more details as required */}
+    return (
+      <div className="flex flex-col min-h-screen">
+        <Navbar />
+        {/* Search Bar */}
+        <form onSubmit={handleSearch}>
+          <div className="search-bar-container">
+            <input
+              type="text"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              placeholder="Search for tracks"
+            />
+            <button type="submit">Search</button>
           </div>
-        ))}
+        </form>
+        {/* Recommendations Container */}
+        <div className="recommendations-container">
+          {recommendations.map((track) => (
+            <div key={track.id} className="song-card">
+              <h3>{track.name}</h3>
+              <p>Artist: {track.artists.map(artist => artist.name).join(', ')}</p>
+            </div>
+          ))}
+        </div>
+        {/* Main Content */}
+        <main className="flex-grow">
+          <h1>Welcome to MelodyScout</h1>
+          <p>Discover and enjoy personalized music recommendations.</p>
+          {/* Logout Button */}
+          <button onClick={handleLogout}>Logout</button>
+        </main>
+        <Footer />
       </div>
-
-      {/* Main Content */}
-      <main className="flex-grow">
-        <h1>Welcome to MelodyScout</h1>
-        <p>Discover and enjoy personalized music recommendations.</p>
-      </main>
-      <Footer />
-    </div>
-  );
+    );
 }
