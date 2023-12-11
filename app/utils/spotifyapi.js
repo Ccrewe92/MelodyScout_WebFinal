@@ -1,23 +1,24 @@
 import axios from "axios";
 import qs from "qs";
 import spotifyConfig from "./spotify";
+import { headers } from "../../next.config";
 
 const BASE_URL = "https://accounts.spotify.com/api";
 const SPOTIFY_API_URL = "https://api.spotify.com/v1";
 
-export const getAccessToken = async () => {
-  const credentials = `${spotifyConfig.clientId}:${spotifyConfig.clientSecret}`;
-  const encodedCredentials = Buffer.from(credentials).toString("base64");
+export const getAccessToken = async (code) => {
+  const encodedCredentials = Buffer.from(`${spotifyConfig.clientId}:${spotifyConfig.clientSecret}`).toString("base64");
 
   const tokenResponse = await axios.post(
     `${BASE_URL}/token`,
-    qs.stringify({ grant_type: "client_credentials" }),
+    qs.stringify({ grant_type: "authorization_code", code, redirect_uri: spotifyConfig.redirectUri }),
     {
       headers: {
         Authorization: `Basic ${encodedCredentials}`,
         "Content-Type": "application/x-www-form-urlencoded",
       },
     }
+
   );
   return tokenResponse.data.access_token;
 };
