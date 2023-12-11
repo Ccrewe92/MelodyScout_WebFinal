@@ -74,28 +74,6 @@ export default function Home() {
   return (
     <div className="flex flex-col min-h-screen">
       <Navbar />
-      {authToken ? (
-        <div className="d-flex">
-          <p>Logged in</p>
-          <button
-            className="px-4 pt-2 bg-blue-500 text-white border-r-2"
-            onClick={logout}
-          >
-            logout
-          </button>
-        </div>
-      ) : (
-        <>
-          <p>Not logged in</p>
-          <a
-            className="px-4 pt-2 bg-blue-500 text-white border-r-2"
-            href={loginUrl}
-          >
-            login
-          </a>
-        </>
-      )}
-
       {/* Search Bar */}
       <form onSubmit={handleSearch}>
         <div className="search-bar-container">
