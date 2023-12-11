@@ -3,8 +3,20 @@
 import React from "react";
 import Navbar from "./components/navbar";
 import Footer from "./components/footer";
+import { useEffect } from "react";
+import { getAccessToken, searchTracks } from "./utils/spotifyapi";
 
 export default function Home() {
+  useEffect(() => {
+    const fetch = async () => {
+      const goodjob = await getAccessToken();
+      console.log(goodjob);
+      const gooderjob = await searchTracks(goodjob, "What is love");
+      console.log(gooderjob);
+    };
+    fetch();
+  }, []);
+  
   return (
     <div className="flex flex-col min-h-screen">
       <Navbar /> {/* Include the Navbar component at the top */}

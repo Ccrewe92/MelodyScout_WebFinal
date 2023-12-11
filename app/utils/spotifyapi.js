@@ -1,6 +1,6 @@
 import axios from "axios";
 import qs from "qs";
-import spotifyConfig from "../spotify";
+import spotifyConfig from "./spotify";
 
 const BASE_URL = "https://accounts.spotify.com/api";
 const SPOTIFY_API_URL = "https://api.spotify.com/v1";
@@ -19,7 +19,6 @@ export const getAccessToken = async () => {
       },
     }
   );
-
   return tokenResponse.data.access_token;
 };
 
