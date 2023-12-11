@@ -25,3 +25,43 @@ body {
     )
     rgb(var(--background-start-rgb));
 }
+
+.search-bar-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.search-bar-container input[type="text"] {
+  padding: 10px;
+  margin-right: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  color: black;
+  caret-color: blue;
+}
+
+.search-bar-container button {
+  padding: 10px 20px;
+  background-color: blue;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.recommendations-container {
+  max-width: 600px; /* Adjust this to your preference */
+  margin: 20px auto; /* Adds top margin and centers the container */
+  background-color: #f3f3f3; /* Light grey background to make the box visible */
+  padding: 20px; /* Adds padding inside the container */
+  border-radius: 8px; /* Rounded corners for the container */
+}
+
+.song-card {
+  border: 1px solid #e91313;
+  border-radius: 4px; /* Adds rounded corners */
+  margin-bottom: 10px; /* Adds bottom margin */
+  padding: 15px; /* Adds padding inside the cards */
+}
