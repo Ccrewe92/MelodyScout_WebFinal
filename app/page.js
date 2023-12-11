@@ -65,9 +65,9 @@ export default function Home() {
     "https://accounts.spotify.com/authorize?" +
     qs.stringify({
       response_type: "code",
-      client_id: spotifyConfig.clientId,
+      client_id: "74f2f2fb31124bae932f4c83f5f3b337",
       scope: "user-read-private user-read-email",
-      redirect_uri: spotifyConfig.redirectUri,
+      redirect_uri: "https://melody-scout-web-final.vercel.app/",
       state: "12321",
     });
 
