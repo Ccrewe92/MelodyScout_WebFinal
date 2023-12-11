@@ -4,8 +4,7 @@ import React, { useState, useEffect } from "react";
 import Navbar from "./components/navbar";
 import Footer from "./components/footer";
 import qs from "qs";
-import { getAccessToken, searchTracks } from "./utils/spotifyapi";
-import spotifyConfig from "./utils/spotify";
+import { searchTracks } from "./utils/spotifyapi";
 import { useSearchParams } from "next/navigation";
 
 export default function Home() {
@@ -13,46 +12,63 @@ export default function Home() {
   const [searchTerm, setSearchTerm] = useState("");
   const [recommendations, setRecommendations] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [code, setCode] = useState(null); // State for the code
 
   const params = useSearchParams();
 
+  const fetchAccessToken = async (code) => {
+    try {
+      const response = await fetch("/api/token", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ code }),
+      });
+      const data = await response.json();
+      return data.access_token;
+    } catch (error) {
+      console.error("Error fetching access token:", error);
+    }
+  };
+
   useEffect(() => {
-    const code = params.get("code");
-    console.log("Received code:", code); // Add this log
-    const fetch = async () => {
-      const authToken = await getAccessToken(code);
-      console.log("Received authToken:", authToken); // Add this log
-      setAuthToken(authToken);
-      // Placeholder for initial Spotify API call
-      const gooderjob = await searchTracks(authToken, searchTerm);
-      console.log("Initial search result:", gooderjob); // Add this log
-    };
+    const fetchedCode = params.get("code");
+    if (fetchedCode) {
+      setCode(fetchedCode);
+    }
+  }, [params]);
+
+  useEffect(() => {
     if (code && !authToken) {
+      const fetch = async () => {
+        const token = await fetchAccessToken(code); // Use fetchAccessToken here
+        setAuthToken(token);
+        if (searchTerm) {
+          const tracks = await searchTracks(token, searchTerm);
+          setRecommendations(tracks);
+        }
+      };
       fetch();
     }
-  }, []);
-
+  }, [code, authToken, searchTerm]);
   const handleSearch = async (e) => {
-    e.preventDefault(); // Prevents the default form submission action
+    e.preventDefault();
     setIsLoading(true);
 
     if (!authToken) {
       console.log("No access token available");
+      setIsLoading(false);
       return;
     }
 
-    console.log("Before API call"); // Add this log
-    setIsLoading(true); // Add a loading state before starting the search
     try {
       const tracks = await searchTracks(authToken, searchTerm);
-      console.log("Tracks received:", tracks); // Add this log
-      setRecommendations(tracks); // Set recommendations state with search results
+      setRecommendations(tracks);
     } catch (error) {
       console.error("Error searching tracks:", error);
-      // Handle error appropriately
     } finally {
-      console.log("After API call"); // Add this log
-      setIsLoading(false); // Ensure loading state is updated when search is complete
+      setIsLoading(false);
     }
   };
 
