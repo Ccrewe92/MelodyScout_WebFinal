@@ -1,25 +1,36 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 
 const PlaylistSearch = ({ authToken, recommendations }) => {
     const [selectedSong, setSelectedSong] = useState(null);
     const [playlists, setPlaylists] = useState([]);
 
-    const handleSongClick = async (song) => {
-        setSelectedSong(song);
-        try {
-            const response = await axios.get(
-                `https://api.spotify.com/v1/recommendations/playlists?track_id=${song.id}`,
-                {
-                    headers: {
-                        Authorization: `Bearer ${authToken}`,
-                    },
+    useEffect(() => {
+        const fetchPlaylists = async () => {
+            if (selectedSong) {
+                try {
+                    const response = await axios.get(
+                        `https://api.spotify.com/v1/search?type=playlist&q=${encodeURIComponent(
+                            selectedSong.name
+                        )}`,
+                        {
+                            headers: {
+                                Authorization: `Bearer ${authToken}`,
+                            },
+                        }
+                    );
+                    setPlaylists(response.data.playlists.items);
+                } catch (error) {
+                    console.error("Error fetching playlists:", error);
                 }
-            );
-            setPlaylists(response.data.items);
-        } catch (error) {
-            console.error("Error fetching playlists:", error);
-        }
+            }
+        };
+
+        fetchPlaylists();
+    }, [authToken, selectedSong]);
+
+    const handleSongClick = (song) => {
+        setSelectedSong(song);
     };
 
     return (
@@ -39,18 +50,6 @@ const PlaylistSearch = ({ authToken, recommendations }) => {
                     )}
                 </div>
             )}
-            {/* Render your search results */}
-            {/* Example: recommendations is the array of search results */}
-            {recommendations.map((song) => (
-                <div
-                    key={song.id}
-                    className="song-card"
-                    onClick={() => handleSongClick(song)}
-                >
-                    <h3>{song.name}</h3>
-                    <p>Artist: {song.artists.map((artist) => artist.name).join(", ")}</p>
-                </div>
-            ))}
         </div>
     );
 };
