@@ -5,7 +5,7 @@ import qs from "qs";
 import spotifyConfig from "../utils/spotify";
 
 const Navbar = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(Cookies.get("userToken") ? true : false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
     const token = Cookies.get("userToken");
