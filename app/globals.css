@@ -57,6 +57,7 @@ body {
   /* Adds padding inside the container */
   border-radius: 8px;
   /* Rounded corners for the container */
+  background-color: #111827;
 }
 
 .song-card {
