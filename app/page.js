@@ -6,7 +6,7 @@ import Footer from "./components/footer";
 import qs from "qs";
 import { searchTracks } from "./utils/spotifyapi";
 import { useSearchParams } from "next/navigation";
-import spotifyConfig from "./utils/spotify";
+import axios from "axios";
 
 export default function Home() {
   const [authToken, setAuthToken] = useState(null);
@@ -14,8 +14,8 @@ export default function Home() {
   const [recommendations, setRecommendations] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [code, setCode] = useState(null); // State for the code
-  const [selectedTrack, setSelectedTrack] = useState(null); // State for the selected track
-
+  const [playlists, setPlaylists] = useState([]);
+  const [selectedSong, setSelectedSong] = useState(null);
   const params = useSearchParams();
 
   const fetchAccessToken = async (code) => {
@@ -33,6 +33,30 @@ export default function Home() {
       console.error("Error fetching access token:", error);
     }
   };
+
+  useEffect(() => {
+    const fetchPlaylists = async () => {
+      if (selectedSong) {
+        try {
+          const response = await axios.get(
+            `https://api.spotify.com/v1/search?type=playlist&q=${encodeURIComponent(
+              selectedSong.name
+            )}`,
+            {
+              headers: {
+                Authorization: `Bearer ${authToken}`,
+              },
+            }
+          );
+          setPlaylists(response.data.playlists.items);
+        } catch (error) {
+          console.error("Error fetching playlists:", error);
+        }
+      }
+    };
+
+    fetchPlaylists();
+  }, [authToken, selectedSong]);
 
   useEffect(() => {
     const fetchedCode = params.get("code");
@@ -100,7 +124,7 @@ export default function Home() {
         {recommendations.map((track) => (
           <a
             key={track.id}
-            href={`https://open.spotify.com/playlist/${track.id}`}
+            href={`https://open.spotify.com/playlist/${playlists[0].id}`}
             className="song-card max-w-sm bg-gray-800 shadow-lg rounded-lg overflow-hidden"
           >
             <div className="px-6 py-4">
