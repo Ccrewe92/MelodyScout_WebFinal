@@ -16,6 +16,7 @@ export default function Home() {
   const [code, setCode] = useState(null); // State for the code
   const [playlists, setPlaylists] = useState([]);
   const [selectedSong, setSelectedSong] = useState(null);
+  const [selectedPlaylist, setSelectedPlaylist] = useState(null);
   const params = useSearchParams();
 
   const fetchAccessToken = async (code) => {
@@ -34,29 +35,38 @@ export default function Home() {
     }
   };
 
-  useEffect(() => {
-    const fetchPlaylists = async () => {
-      if (selectedSong) {
-        try {
-          const response = await axios.get(
-            `https://api.spotify.com/v1/search?type=playlist&q=${encodeURIComponent(
-              selectedSong.name
-            )}`,
-            {
-              headers: {
-                Authorization: `Bearer ${authToken}`,
-              },
-            }
-          );
-          setPlaylists(response.data.playlists.items);
-        } catch (error) {
-          console.error("Error fetching playlists:", error);
-        }
+  const fetchPlaylists = async () => {
+    if (selectedSong) {
+      try {
+        const response = await axios.get(
+          `https://api.spotify.com/v1/search?type=playlist&q=${encodeURIComponent(
+            selectedSong.name
+          )}`,
+          {
+            headers: {
+              Authorization: `Bearer ${authToken}`,
+            },
+          }
+        );
+        const { items } = response.data.playlists;
+        // Filter playlists that include the selected song
+        const playlistsWithSong = items.filter((playlist) =>
+          playlist.tracks.items.some(
+            (item) => item.track.id === selectedSong.id
+          )
+        );
+        // Select a random playlist from the filtered list
+        const randomPlaylist =
+          playlistsWithSong[
+          Math.floor(Math.random() * playlistsWithSong.length)
+          ];
+        setPlaylists(playlistsWithSong);
+        setSelectedPlaylist(randomPlaylist);
+      } catch (error) {
+        console.error("Error fetching playlists:", error);
       }
-    };
-
-    fetchPlaylists();
-  }, [authToken, selectedSong]);
+    }
+  };
 
   useEffect(() => {
     const fetchedCode = params.get("code");
@@ -78,7 +88,8 @@ export default function Home() {
       fetch();
     }
   }, [code, authToken, searchTerm]);
-  const handleSearch = async (e) => {
+
+  const handleSearch = async (e, track) => {
     e.preventDefault();
     setIsLoading(true);
 
@@ -89,6 +100,7 @@ export default function Home() {
     }
 
     try {
+      setSelectedSong(track); // Set the selected song
       const tracks = await searchTracks(authToken, searchTerm);
       setRecommendations(tracks);
     } catch (error) {
@@ -124,15 +136,11 @@ export default function Home() {
         {recommendations.map((track) => (
           <a
             key={track.id}
-            href={`https://open.spotify.com/playlist/${playlists[0].id}`}
+            href={`https://open.spotify.com/playlist/${selectedPlaylist?.id}`}
             className="song-card max-w-sm bg-gray-800 shadow-lg rounded-lg overflow-hidden"
+            onClick={(e) => handleSearch(e, track)}
           >
-            <div className="px-6 py-4">
-              <h3 className="font-bold text-xl mb-2">{track.name}</h3>
-              <p className="text-gray-400 text-base">
-                Artist: {track.artists.map((artist) => artist.name).join(", ")}
-              </p>
-            </div>
+            {/* Render the song card content */}
           </a>
         ))}
       </div>
