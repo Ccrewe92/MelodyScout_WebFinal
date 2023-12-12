@@ -18,7 +18,7 @@ export default async function handler(req, res) {
         qs.stringify({
           grant_type: "authorization_code",
           code,
-          redirect_uri: redirectUri,
+          redirect_uri: "https://melody-scout-web-final.vercel.app/",
         }),
         {
           headers: {
