@@ -7,7 +7,9 @@ import spotifyConfig from "../utils/spotify"; // Make sure this path is correct
 
 const Navbar = () => {
   // State to manage login status based on the userToken cookie
-  const [isLoggedIn, setIsLoggedIn] = useState(Cookies.get("userToken") ? true : false);
+  const [isLoggedIn, setIsLoggedIn] = useState(
+    Cookies.get("userToken") ? true : false
+  );
 
   // Effect to set the isLoggedIn state based on the cookie presence
   useEffect(() => {
@@ -23,25 +25,13 @@ const Navbar = () => {
     const scopes = ["user-read-private", "user-read-email"];
     // Construct the full authorization URL
     const authUrl = `${spotifyAuthEndpoint}?${qs.stringify({
-      client_id: spotifyConfig.clientId,
-      redirect_uri: spotifyConfig.redirectUri,
+      client_id: "74f2f2fb31124bae932f4c83f5f3b337",
+      redirect_uri: "https://melody-scout-web-final.vercel.app/",
       response_type: "code",
       scope: scopes.join(" "),
-      state: spotifyConfig.state, // Ensure you have a state value defined in spotifyConfig
     })}`;
     // Redirect the user to Spotify's authorization page
     window.location.href = authUrl;
-  };
-
-  // Handler for logout button click
-  const handleLogoutClick = () => {
-    // Confirm with the user before logging out
-    if (window.confirm("Are you sure you want to log out?")) {
-      // Remove the userToken cookie
-      Cookies.remove("userToken");
-      // Update the isLoggedIn state
-      setIsLoggedIn(false);
-    }
   };
 
   return (
@@ -57,7 +47,8 @@ const Navbar = () => {
           </div>
           <div className="flex-shrink-0">
             {isLoggedIn ? (
-              <button onClick={handleLogoutClick}>Log Out</button>
+              // You can customize the logged-in state if needed
+              <span>User is logged in</span>
             ) : (
               <button onClick={handleLoginClick}>Log In</button>
             )}
