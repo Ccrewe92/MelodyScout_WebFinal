@@ -7,6 +7,7 @@ import qs from "qs";
 import { searchTracks } from "./utils/spotifyapi";
 import { useSearchParams } from "next/navigation";
 import spotifyConfig from "./utils/spotify";
+import Cookies from "js-cookie";
 
 export default function Home() {
   const [authToken, setAuthToken] = useState(null);
@@ -14,7 +15,6 @@ export default function Home() {
   const [recommendations, setRecommendations] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [code, setCode] = useState(null);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const params = useSearchParams();
 
@@ -28,13 +28,13 @@ export default function Home() {
         body: JSON.stringify({ code }),
       });
       const data = await response.json();
-      setIsLoggedIn(true); // Set isLoggedIn to true
+      setAuthToken(data.access_token);
+      Cookies.set("userToken", data.access_token); // Store token in cookie
       return data.access_token;
     } catch (error) {
       console.error("Error fetching access token:", error);
     }
   };
-
   useEffect(() => {
     const fetchedCode = params.get("code");
     if (fetchedCode) {
