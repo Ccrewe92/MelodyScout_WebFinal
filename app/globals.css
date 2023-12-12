@@ -3,15 +3,20 @@
 @tailwind utilities;
 
 :root {
-  --spotify-green: 30, 215, 96; /* RGB values for Spotify's green */
-  --spotify-black: 25, 20, 20; /* Dark background, almost black */
+  --spotify-green: 30, 215, 96;
+  /* RGB values for Spotify's green */
+  --spotify-black: 25, 20, 20;
+  /* Dark background, almost black */
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --foreground-rgb: 255, 255, 255; /* Light text for dark theme */
-    --background-start-rgb: 18, 18, 18; /* Spotify's dark gray to black gradient start */
-    --background-end-rgb: 25, 20, 20; /* Spotify's dark gray to black gradient end */
+    --foreground-rgb: 255, 255, 255;
+    /* Light text for dark theme */
+    --background-start-rgb: 18, 18, 18;
+    /* Spotify's dark gray to black gradient start */
+    --background-end-rgb: 25, 20, 20;
+    /* Spotify's dark gray to black gradient end */
   }
 }
 
@@ -58,7 +63,8 @@ body {
   margin: 20px auto;
   padding: 20px;
   border-radius: 8px;
-  background-color: rgba(0, 0, 0, 0.8); /* Slightly transparent black */
+  background-color: rgba(0, 0, 0, 0.8);
+  /* Slightly transparent black */
 }
 
 .song-card {
