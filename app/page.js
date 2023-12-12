@@ -108,14 +108,18 @@ export default function Home() {
       {/* Recommendations Container */}
       <div className="flex flex-wrap justify-center gap-4 m-4">
         {recommendations.map((track) => (
-          <div key={track.id} className="song-card max-w-sm bg-gray-800 shadow-lg rounded-lg overflow-hidden">
+          <a
+            key={track.id}
+            href={`https://www.example.com/track/${track.id}`} // Replace with the appropriate URL for the track
+            className="song-card max-w-sm bg-gray-800 shadow-lg rounded-lg overflow-hidden"
+          >
             <div className="px-6 py-4">
               <h3 className="font-bold text-xl mb-2">{track.name}</h3>
               <p className="text-gray-400 text-base">
                 Artist: {track.artists.map((artist) => artist.name).join(", ")}
               </p>
             </div>
-          </div>
+          </a>
         ))}
       </div>
       <PlaylistSearch authToken={authToken} recommendations={recommendations} />
