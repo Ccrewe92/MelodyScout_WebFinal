@@ -1,4 +1,3 @@
-// Navbar.js
 import React, { useState, useEffect } from "react";
 import Cookies from "js-cookie";
 import Link from "next/link";
@@ -25,8 +24,8 @@ const Navbar = () => {
     const scopes = ["user-read-private", "user-read-email"];
     // Construct the full authorization URL
     const authUrl = `${spotifyAuthEndpoint}?${qs.stringify({
-      client_id: "74f2f2fb31124bae932f4c83f5f3b337",
-      redirect_uri: "https://melody-scout-web-final.vercel.app/",
+      client_id: spotifyConfig.clientId,
+      redirect_uri: spotifyConfig.redirectUri,
       response_type: "code",
       scope: scopes.join(" "),
     })}`;
@@ -39,11 +38,11 @@ const Navbar = () => {
       <div className="max-w-7xl mx-auto flex justify-between items-center">
         <Link href="/">
           {/* Just place the image inside the Link component, Next.js will handle the rest */}
-          <img 
-            src="/melodyscout.png" 
+          <img
+            src="/melodyscout.png"
             height="32" // Adjust as needed
             width="32" // Adjust as needed
-            alt="Logo" 
+            alt="Logo"
             className="h-8 w-auto cursor-pointer" // Added cursor-pointer to imply it's clickable
           />
         </Link>

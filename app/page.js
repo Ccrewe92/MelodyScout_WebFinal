@@ -6,7 +6,7 @@ import Footer from "./components/footer";
 import qs from "qs";
 import { searchTracks } from "./utils/spotifyapi";
 import { useSearchParams } from "next/navigation";
-import axios from "axios";
+import spotifyConfig from "./utils/spotify";
 
 export default function Home() {
   const [authToken, setAuthToken] = useState(null);
@@ -14,9 +14,7 @@ export default function Home() {
   const [recommendations, setRecommendations] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [code, setCode] = useState(null); // State for the code
-  const [playlists, setPlaylists] = useState([]);
-  const [selectedSong, setSelectedSong] = useState(null);
-  const [selectedPlaylist, setSelectedPlaylist] = useState(null);
+
   const params = useSearchParams();
 
   const fetchAccessToken = async (code) => {
@@ -32,39 +30,6 @@ export default function Home() {
       return data.access_token;
     } catch (error) {
       console.error("Error fetching access token:", error);
-    }
-  };
-
-  const fetchPlaylists = async () => {
-    if (selectedSong) {
-      try {
-        const response = await axios.get(
-          `https://api.spotify.com/v1/search?type=playlist&q=${encodeURIComponent(
-            selectedSong.name
-          )}`,
-          {
-            headers: {
-              Authorization: `Bearer ${authToken}`,
-            },
-          }
-        );
-        const { items } = response.data.playlists;
-        // Filter playlists that include the selected song
-        const playlistsWithSong = items.filter((playlist) =>
-          playlist.tracks.items.some(
-            (item) => item.track.id === selectedSong.id
-          )
-        );
-        // Select a random playlist from the filtered list
-        const randomPlaylist =
-          playlistsWithSong[
-          Math.floor(Math.random() * playlistsWithSong.length)
-          ];
-        setPlaylists(playlistsWithSong);
-        setSelectedPlaylist(randomPlaylist);
-      } catch (error) {
-        console.error("Error fetching playlists:", error);
-      }
     }
   };
 
@@ -88,8 +53,7 @@ export default function Home() {
       fetch();
     }
   }, [code, authToken, searchTerm]);
-
-  const handleSearch = async (e, track) => {
+  const handleSearch = async (e) => {
     e.preventDefault();
     setIsLoading(true);
 
@@ -100,7 +64,6 @@ export default function Home() {
     }
 
     try {
-      setSelectedSong(track); // Set the selected song
       const tracks = await searchTracks(authToken, searchTerm);
       setRecommendations(tracks);
     } catch (error) {
@@ -110,44 +73,46 @@ export default function Home() {
     }
   };
 
+  const loginUrl =
+    "https://accounts.spotify.com/authorize?" +
+    qs.stringify({
+      response_type: "code",
+      client_id: spotifyConfig.clientId,
+      scope: "user-read-private user-read-email",
+      redirect_uri: spotifyConfig.redirectUri,
+      state: "12321",
+    });
+
   return (
-    <div className="flex flex-col min-h-screen bg-black text-white">
+    <div className="flex flex-col min-h-screen">
       <Navbar />
       {/* Search Bar */}
-      <div className="flex justify-center mt-10">
-        <form onSubmit={handleSearch} className="flex w-full max-w-xl">
+      <form onSubmit={handleSearch}>
+        <div className="search-bar-container">
           <input
             type="text"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="Search for tracks"
-            className="flex-1 p-2 border-2 border-r-0 border-green-500 focus:outline-none bg-gray-800 text-white"
           />
-          <button
-            type="submit"
-            className="bg-green-500 px-4 py-2 border-2 border-green-500 hover:bg-green-600 transition-colors"
-          >
-            Search
-          </button>
-        </form>
-      </div>
+          <button type="submit">Search</button>
+        </div>
+      </form>
       {/* Recommendations Container */}
-      <div className="flex flex-wrap justify-center gap-4 m-4">
+      <div className="recommendations-container">
         {recommendations.map((track) => (
-          <a
-            key={track.id}
-            href={`https://open.spotify.com/playlist/${selectedPlaylist?.id}`}
-            className="song-card max-w-sm bg-gray-800 shadow-lg rounded-lg overflow-hidden"
-            onClick={(e) => handleSearch(e, track)}
-          >
-            {/* Render the song card content */}
-          </a>
+          <div key={track.id} className="song-card">
+            <h3>{track.name}</h3>
+            <p>
+              Artist: {track.artists.map((artist) => artist.name).join(", ")}
+            </p>
+          </div>
         ))}
       </div>
       {/* Main Content */}
-      <main className="flex-grow flex items-center justify-center flex-col">
-        <h1 className="text-4xl font-bold">Welcome to MelodyScout</h1>
-        <p className="text-xl mt-2">Discover and enjoy personalized music recommendations.</p>
+      <main className="flex-grow">
+        <h1>Welcome to MelodyScout</h1>
+        <p>Discover and enjoy personalized music recommendations.</p>
         {/* Logout Button */}
       </main>
       <Footer />
