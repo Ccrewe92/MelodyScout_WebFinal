@@ -40,9 +40,7 @@ const Navbar = () => {
         <div className="flex justify-between items-center py-6 md:space-x-10">
           <div className="flex-shrink-0">
             <Link href="/">
-              <a>
-                <img src="/melodyscout.png" className="h-8 w-auto" alt="Logo" />
-              </a>
+              <img src="/melodyscout.png" className="h-8 w-auto" alt="Logo" />
             </Link>
           </div>
           <div className="flex-shrink-0">
