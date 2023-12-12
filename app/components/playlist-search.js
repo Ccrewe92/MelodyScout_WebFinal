@@ -39,20 +39,18 @@ const PlaylistSearch = ({ authToken, recommendations }) => {
                     )}
                 </div>
             )}
-            <div className="search-results">
-                {/* Render your search results */}
-                {/* Example: recommendations is the array of search results */}
-                {recommendations.map((song) => (
-                    <div
-                        key={song.id}
-                        className="song-card"
-                        onClick={() => handleSongClick(song)}
-                    >
-                        <h3>{song.name}</h3>
-                        <p>Artist: {song.artists.map((artist) => artist.name).join(", ")}</p>
-                    </div>
-                ))}
-            </div>
+            {/* Render your search results */}
+            {/* Example: recommendations is the array of search results */}
+            {recommendations.map((song) => (
+                <div
+                    key={song.id}
+                    className="song-card"
+                    onClick={() => handleSongClick(song)}
+                >
+                    <h3>{song.name}</h3>
+                    <p>Artist: {song.artists.map((artist) => artist.name).join(", ")}</p>
+                </div>
+            ))}
         </div>
     );
 };
