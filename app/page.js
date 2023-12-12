@@ -13,7 +13,8 @@ export default function Home() {
   const [searchTerm, setSearchTerm] = useState("");
   const [recommendations, setRecommendations] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [code, setCode] = useState(null); // State for the code
+  const [code, setCode] = useState(null);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const params = useSearchParams();
 
@@ -27,6 +28,7 @@ export default function Home() {
         body: JSON.stringify({ code }),
       });
       const data = await response.json();
+      setIsLoggedIn(true); // Set isLoggedIn to true
       return data.access_token;
     } catch (error) {
       console.error("Error fetching access token:", error);
@@ -73,15 +75,6 @@ export default function Home() {
     }
   };
 
-  const loginUrl =
-    "https://accounts.spotify.com/authorize?" +
-    qs.stringify({
-      response_type: "code",
-      client_id: spotifyConfig.clientId,
-      scope: "user-read-private user-read-email",
-      redirect_uri: spotifyConfig.redirectUri,
-      state: "12321",
-    });
   return (
     <div className="flex flex-col min-h-screen bg-black text-white">
       <Navbar />
