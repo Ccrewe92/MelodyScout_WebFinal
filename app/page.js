@@ -15,6 +15,7 @@ export default function Home() {
   const [recommendations, setRecommendations] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [code, setCode] = useState(null); // State for the code
+  const [selectedTrack, setSelectedTrack] = useState(null); // State for the selected track
 
   const params = useSearchParams();
 
@@ -83,6 +84,12 @@ export default function Home() {
       redirect_uri: spotifyConfig.redirectUri,
       state: "12321",
     });
+
+  const handleTrackClick = (trackId) => {
+    // Set the selected track based on the trackId
+    const track = recommendations.find((track) => track.id === trackId);
+    setSelectedTrack(track);
+  };
 
   return (
     <div className="flex flex-col min-h-screen bg-black text-white">
