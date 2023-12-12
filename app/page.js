@@ -7,7 +7,6 @@ import qs from "qs";
 import { searchTracks } from "./utils/spotifyapi";
 import { useSearchParams } from "next/navigation";
 import spotifyConfig from "./utils/spotify";
-import PlaylistSearch from "./components/playlist-search";
 
 export default function Home() {
   const [authToken, setAuthToken] = useState(null);
@@ -75,22 +74,6 @@ export default function Home() {
     }
   };
 
-  const loginUrl =
-    "https://accounts.spotify.com/authorize?" +
-    qs.stringify({
-      response_type: "code",
-      client_id: spotifyConfig.clientId,
-      scope: "user-read-private user-read-email",
-      redirect_uri: spotifyConfig.redirectUri,
-      state: "12321",
-    });
-
-  const handleTrackClick = (trackId) => {
-    // Set the selected track based on the trackId
-    const track = recommendations.find((track) => track.id === trackId);
-    setSelectedTrack(track);
-  };
-
   return (
     <div className="flex flex-col min-h-screen bg-black text-white">
       <Navbar />
@@ -117,7 +100,7 @@ export default function Home() {
         {recommendations.map((track) => (
           <a
             key={track.id}
-            href={`https://www.example.com/track/${track.id}`} // Replace with the appropriate URL for the track
+            href={`https://open.spotify.com/playlist/${track.id}`}
             className="song-card max-w-sm bg-gray-800 shadow-lg rounded-lg overflow-hidden"
           >
             <div className="px-6 py-4">
@@ -129,7 +112,6 @@ export default function Home() {
           </a>
         ))}
       </div>
-      <PlaylistSearch authToken={authToken} recommendations={recommendations} />
       {/* Main Content */}
       <main className="flex-grow flex items-center justify-center flex-col">
         <h1 className="text-4xl font-bold">Welcome to MelodyScout</h1>
