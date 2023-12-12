@@ -2,35 +2,31 @@ import React, { useState, useEffect } from "react";
 import Cookies from "js-cookie";
 import Link from "next/link";
 import qs from "qs";
-import spotifyConfig from "../utils/spotify"; // Make sure this path is correct
+import spotifyConfig from "../utils/spotify";
 
 const Navbar = () => {
-  // State to manage login status based on the userToken cookie
-  const [isLoggedIn, setIsLoggedIn] = useState(
-    Cookies.get("userToken") ? true : false
-  );
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  // Effect to set the isLoggedIn state based on the cookie presence
   useEffect(() => {
     const token = Cookies.get("userToken");
-    setIsLoggedIn(!!token); // The double bang (!!) converts a truthy/falsy value to a boolean true/false
+    setIsLoggedIn(!!token);
   }, []);
 
-  // Handler for login button click
   const handleLoginClick = () => {
-    // Define Spotify's authorization endpoint
     const spotifyAuthEndpoint = "https://accounts.spotify.com/authorize";
-    // Define the scopes required for the Spotify access
     const scopes = ["user-read-private", "user-read-email"];
-    // Construct the full authorization URL
     const authUrl = `${spotifyAuthEndpoint}?${qs.stringify({
       client_id: spotifyConfig.clientId,
       redirect_uri: spotifyConfig.redirectUri,
       response_type: "code",
       scope: scopes.join(" "),
     })}`;
-    // Redirect the user to Spotify's authorization page
     window.location.href = authUrl;
+  };
+
+  const handleLogoutClick = () => {
+    Cookies.remove("userToken");
+    setIsLoggedIn(false);
   };
 
   return (
