@@ -7,6 +7,7 @@ import qs from "qs";
 import { searchTracks } from "./utils/spotifyapi";
 import { useSearchParams } from "next/navigation";
 import spotifyConfig from "./utils/spotify";
+import PlaylistSearch from "./components/playlist-search";
 
 export default function Home() {
   const [authToken, setAuthToken] = useState(null);
@@ -83,47 +84,48 @@ export default function Home() {
       state: "12321",
     });
 
-    return (
-      <div className="flex flex-col min-h-screen bg-black text-white">
-        <Navbar />
-        {/* Search Bar */}
-        <div className="flex justify-center mt-10">
-          <form onSubmit={handleSearch} className="flex w-full max-w-xl">
-            <input
-              type="text"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder="Search for tracks"
-              className="flex-1 p-2 border-2 border-r-0 border-green-500 focus:outline-none bg-gray-800 text-white"
-            />
-            <button
-              type="submit"
-              className="bg-green-500 px-4 py-2 border-2 border-green-500 hover:bg-green-600 transition-colors"
-            >
-              Search
-            </button>
-          </form>
-        </div>
-        {/* Recommendations Container */}
-        <div className="flex flex-wrap justify-center gap-4 m-4">
-          {recommendations.map((track) => (
-            <div key={track.id} className="song-card max-w-sm bg-gray-800 shadow-lg rounded-lg overflow-hidden">
-              <div className="px-6 py-4">
-                <h3 className="font-bold text-xl mb-2">{track.name}</h3>
-                <p className="text-gray-400 text-base">
-                  Artist: {track.artists.map((artist) => artist.name).join(", ")}
-                </p>
-              </div>
-            </div>
-          ))}
-        </div>
-        {/* Main Content */}
-        <main className="flex-grow flex items-center justify-center flex-col">
-          <h1 className="text-4xl font-bold">Welcome to MelodyScout</h1>
-          <p className="text-xl mt-2">Discover and enjoy personalized music recommendations.</p>
-          {/* Logout Button */}
-        </main>
-        <Footer />
+  return (
+    <div className="flex flex-col min-h-screen bg-black text-white">
+      <Navbar />
+      {/* Search Bar */}
+      <div className="flex justify-center mt-10">
+        <form onSubmit={handleSearch} className="flex w-full max-w-xl">
+          <input
+            type="text"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            placeholder="Search for tracks"
+            className="flex-1 p-2 border-2 border-r-0 border-green-500 focus:outline-none bg-gray-800 text-white"
+          />
+          <button
+            type="submit"
+            className="bg-green-500 px-4 py-2 border-2 border-green-500 hover:bg-green-600 transition-colors"
+          >
+            Search
+          </button>
+        </form>
       </div>
-    );
-  }
+      {/* Recommendations Container */}
+      <div className="flex flex-wrap justify-center gap-4 m-4">
+        {recommendations.map((track) => (
+          <div key={track.id} className="song-card max-w-sm bg-gray-800 shadow-lg rounded-lg overflow-hidden">
+            <div className="px-6 py-4">
+              <h3 className="font-bold text-xl mb-2">{track.name}</h3>
+              <p className="text-gray-400 text-base">
+                Artist: {track.artists.map((artist) => artist.name).join(", ")}
+              </p>
+            </div>
+          </div>
+        ))}
+      </div>
+      <PlaylistSearch authToken={authToken} recommendations={recommendations} />
+      {/* Main Content */}
+      <main className="flex-grow flex items-center justify-center flex-col">
+        <h1 className="text-4xl font-bold">Welcome to MelodyScout</h1>
+        <p className="text-xl mt-2">Discover and enjoy personalized music recommendations.</p>
+        {/* Logout Button */}
+      </main>
+      <Footer />
+    </div>
+  );
+}
