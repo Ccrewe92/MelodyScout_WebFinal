@@ -6,6 +6,7 @@ import Footer from "./components/footer";
 import qs from "qs";
 import { searchTracks } from "./utils/spotifyapi";
 import { useSearchParams } from "next/navigation";
+import spotifyConfig from "./utils/spotify";
 
 export default function Home() {
   const [authToken, setAuthToken] = useState(null);
@@ -76,9 +77,9 @@ export default function Home() {
     "https://accounts.spotify.com/authorize?" +
     qs.stringify({
       response_type: "code",
-      client_id: "74f2f2fb31124bae932f4c83f5f3b337",
+      client_id: spotifyConfig.clientId,
       scope: "user-read-private user-read-email",
-      redirect_uri: "https://melody-scout-web-final.vercel.app/",
+      redirect_uri: spotifyConfig.redirectUri,
       state: "12321",
     });
 

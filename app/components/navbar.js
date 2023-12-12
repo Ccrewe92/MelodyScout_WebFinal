@@ -25,8 +25,8 @@ const Navbar = () => {
     const scopes = ["user-read-private", "user-read-email"];
     // Construct the full authorization URL
     const authUrl = `${spotifyAuthEndpoint}?${qs.stringify({
-      client_id: "74f2f2fb31124bae932f4c83f5f3b337",
-      redirect_uri: "https://melody-scout-web-final.vercel.app/",
+      client_id: spotifyConfig.clientId,
+      redirect_uri: spotifyConfig.redirectUri,
       response_type: "code",
       scope: scopes.join(" "),
     })}`;
